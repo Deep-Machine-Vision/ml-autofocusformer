@@ -6,13 +6,35 @@
 #include <torch/extension.h>
 #include <vector>
 
+torch::Tensor clusten_av_cuda_forward_fused2(
+    const torch::Tensor &attn,             
+    const torch::Tensor &v,               
+    const torch::Tensor &nbhd_idx);
+
+torch::Tensor clusten_av_cuda_forward_fused(
+    const torch::Tensor &attn,             
+    const torch::Tensor &v,               
+    const torch::Tensor &nbhd_idx);
+
+std::vector<torch::Tensor> clusten_av_cuda_backward_fused(
+    const torch::Tensor &d_feat,
+    const torch::Tensor &attn,
+    const torch::Tensor &v,
+    const torch::Tensor &nbhd_idx);
+
+std::vector<torch::Tensor> clusten_av_cuda_backward_fused2(
+    const torch::Tensor &d_feat,
+    const torch::Tensor &attn,
+    const torch::Tensor &v,
+    const torch::Tensor &nbhd_idx);
+
 torch::Tensor clusten_av_cuda_forward(
     const torch::Tensor &attn,                          // b x h x n x m
     const torch::Tensor &v,                             // b x h x n x c
     const torch::Tensor &nbhd_idx);                     // b x n x m
 
 std::vector<torch::Tensor> clusten_av_cuda_backward(
-    const torch::Tensor &d_feat, 
+    const torch::Tensor &d_feat,
     const torch::Tensor &attn,
     const torch::Tensor &v,
     const torch::Tensor &nbhd_idx);
@@ -29,7 +51,8 @@ torch::Tensor clusten_av_forward(
     CHECK_INPUT(attn);
     CHECK_INPUT(v);
     CHECK_INPUT(nbhd_idx);
-    return clusten_av_cuda_forward(attn, v, nbhd_idx);
+    // return clusten_av_cuda_forward(attn, v, nbhd_idx);
+    return clusten_av_cuda_forward_opt(attn, v, nbhd_idx);
 }
 
 std::vector<torch::Tensor> clusten_av_backward(
@@ -41,7 +64,8 @@ std::vector<torch::Tensor> clusten_av_backward(
     CHECK_INPUT(attn);
     CHECK_INPUT(v);
     CHECK_INPUT(nbhd_idx);
-    return clusten_av_cuda_backward(d_feat, attn, v, nbhd_idx);
+    // return clusten_av_cuda_backward(d_feat, attn, v, nbhd_idx);
+    return clusten_av_cuda_backward_opt(d_feat, attn, v, nbhd_idx);
 }
 
 
