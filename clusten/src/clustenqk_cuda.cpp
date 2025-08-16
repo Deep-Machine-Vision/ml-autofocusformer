@@ -6,6 +6,17 @@
 #include <torch/extension.h>
 #include <vector>
 
+torch::Tensor clusten_qk_cuda_forward_opt(
+    const torch::Tensor &query,             // b x h x n x c
+    const torch::Tensor &key,               // b x h x n x c
+    const torch::Tensor &nbhd_idx);         // b x n x m
+
+std::vector<torch::Tensor> clusten_qk_cuda_backward_opt(
+    const torch::Tensor &d_attn,
+    const torch::Tensor &query,
+    const torch::Tensor &key,
+    const torch::Tensor &nbhd_idx);
+
 torch::Tensor clusten_qk_cuda_forward(
     const torch::Tensor &query,             // b x h x n x c
     const torch::Tensor &key,               // b x h x n x c
@@ -29,7 +40,8 @@ torch::Tensor clusten_qk_forward(
     CHECK_INPUT(query);
     CHECK_INPUT(key);
     CHECK_INPUT(nbhd_idx);
-    return clusten_qk_cuda_forward(query, key, nbhd_idx);
+    // return clusten_qk_cuda_forward(query, key, nbhd_idx);
+    return clusten_qk_cuda_forward_opt(query, key, nbhd_idx);
 }
 
 std::vector<torch::Tensor> clusten_qk_backward(
@@ -41,7 +53,8 @@ std::vector<torch::Tensor> clusten_qk_backward(
     CHECK_INPUT(query);
     CHECK_INPUT(key);
     CHECK_INPUT(nbhd_idx);
-    return clusten_qk_cuda_backward(d_attn, query, key, nbhd_idx);
+    // return clusten_qk_cuda_backward(d_attn, query, key, nbhd_idx);
+    return clusten_qk_cuda_backward_opt(d_attn, query, key, nbhd_idx);
 }
 
 
