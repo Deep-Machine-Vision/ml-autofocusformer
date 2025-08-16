@@ -6,6 +6,17 @@
 #include <torch/extension.h>
 #include <vector>
 
+torch::Tensor clusten_wf_cuda_forward_opt(
+    const torch::Tensor &weights,                           // b x n_ x m x ic
+    const torch::Tensor &feat,                              // b x n x c
+    const torch::Tensor &nbhd_idx);                         // b x n_ x m
+
+std::vector<torch::Tensor> clusten_wf_cuda_backward_opt(
+    const torch::Tensor &d_feat_new, 
+    const torch::Tensor &weights,
+    const torch::Tensor &feat,
+    const torch::Tensor &nbhd_idx);
+
 torch::Tensor clusten_wf_cuda_forward(
     const torch::Tensor &weights,                           // b x n_ x m x ic
     const torch::Tensor &feat,                              // b x n x c
@@ -29,7 +40,8 @@ torch::Tensor clusten_wf_forward(
     CHECK_INPUT(weights);
     CHECK_INPUT(feat);
     CHECK_INPUT(nbhd_idx);
-    return clusten_wf_cuda_forward(weights, feat, nbhd_idx);
+    // return clusten_wf_cuda_forward(weights, feat, nbhd_idx);
+    return clusten_wf_cuda_forward_opt(weights, feat, nbhd_idx);
 }
 
 std::vector<torch::Tensor> clusten_wf_backward(
@@ -41,7 +53,8 @@ std::vector<torch::Tensor> clusten_wf_backward(
     CHECK_INPUT(weights);
     CHECK_INPUT(feat);
     CHECK_INPUT(nbhd_idx);
-    return clusten_wf_cuda_backward(d_feat_new, weights, feat, nbhd_idx);
+    // return clusten_wf_cuda_backward(d_feat_new, weights, feat, nbhd_idx);
+    return clusten_wf_cuda_backward_opt(d_feat_new, weights, feat, nbhd_idx);
 }
 
 
